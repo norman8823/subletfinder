@@ -1,0 +1,22 @@
+<h2>My Listings</h2>
+<a href="/listings/new" class="create-listing-btn">Create New Listing</a>
+
+<% if (listings && listings.length > 0) { %>
+  <ul>
+    <% listings.forEach(listing => { %>
+      <li>
+        <h3><%= listing.title %></h3>
+        <p>Price: $<%= listing.price %></p>
+        <p>Bedrooms: <%= listing.bedrooms %></p>
+        <p>Borough: <%= listing.borough %></p>
+        <a href="/listings/<%= listing._id %>">View Details</a>
+        <a href="/listings/<%= listing._id %>/edit">Edit</a>
+        <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    <% }); %>
+  </ul>
+<% } else { %>
+  <p>You haven't created any listings yet.</p>
+<% } %>

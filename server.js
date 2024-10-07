@@ -1,15 +1,31 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const morgan = require('morgan');
 const session = require('express-session');
 
+const Listing = require('./models/listings.js');
 const authController = require('./controllers/auth.js');
+const listingsController = require('./controllers/listings.js');
+const usersController = require('./controllers/users');
 
 const port = process.env.PORT ? process.env.PORT : '3000';
+
+app.use(expressLayouts);
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+const isLoggedIn = (req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    res.redirect('/auth/sign-in');
+  }
+};
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -34,15 +50,28 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/vip-lounge', (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send('Sorry, no guests allowed.');
+app.get('/listings/browse', async (req, res) => {
+  try {
+    const listings = await Listing.find();
+    res.render('partials/browse-listings', { listings, user: req.session.user, layout: false });
+  } catch (error) {
+    res.status(500).send('Error fetching listings');
   }
 });
 
+app.get('/users/my-listings', isLoggedIn, async (req, res) => {
+  try {
+    const listings = await Listing.find({ user: req.session.user._id });
+    res.render('partials/my-listings', { listings, user: req.session.user, layout: false });
+  } catch (error) {
+    res.status(500).send('Error fetching listings');
+  }
+});
+
+
 app.use('/auth', authController);
+app.use('/listings', listingsController);
+app.use('/users', usersController);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

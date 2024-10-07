@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Listings</title>
+</head>
+<body>
+  <h1>My Listings</h1>
+  
+  <% if (listings && listings.length > 0) { %>
+    <ul>
+      <% listings.forEach(listing => { %>
+        <li>
+          <a href="/listings/<%= listing._id %>"><%= listing.title %></a>
+          - $<%= listing.price %>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>You haven't created any listings yet.</p>
+  <% } %>
+  
+  <a href="/listings/new">Create a New Listing</a>
+</body>
+</html>

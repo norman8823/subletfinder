@@ -4,20 +4,108 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Page</title>
+  <style>
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    .tab button.active {
+      background-color: #ccc;
+    }
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+  </style>
 </head>
 <body>
+  <nav>
+    <a href="/">Home</a>
+    <% if (user) { %>
+      <a href="/users/profile">My Account</a>
+      <a href="/auth/sign-out">Log Out</a>
+    <% } else { %>
+      <a href="/auth/sign-in">Sign In</a>
+      <a href="/auth/sign-up">Sign Up</a>
+    <% } %>
+  </nav>
+
+  <h1>Welcome to the app, <%= user ? user.username : 'guest' %>!</h1>
+
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'BrowseListings')" id="defaultOpen">Browse Listings</button>
+    <% if (user) { %>
+      <button class="tablinks" onclick="openTab(event, 'MyListings')">My Listings</button>
+    <% } %>
+  </div>
+
+  <div id="BrowseListings" class="tabcontent">
+    <h3>Browse Listings</h3>
+    <!-- Content for Browse Listings will be loaded here -->
+  </div>
+
   <% if (user) { %>
-    <h1>Welcome to the app, <%= user.username %>!</h1>
-    <p>
-      <a href="/auth/sign-out">Sign out</a>
-    </p>
-  <% } else { %>
-    <h1>Welcome to the app, guest.</h1>
-    <p>
-      <a href="/auth/sign-up">Sign up</a> or
-      <a href="/auth/sign-in">Sign in</a>.
-    </p>
+    <div id="MyListings" class="tabcontent">
+      <h3>My Listings</h3>
+      <!-- Content for My Listings will be loaded here -->
+    </div>
   <% } %>
-  <p><a href="/vip-lounge">Get into the VIP Users Only lounge!</a></p>
+
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+
+      // Load content for the selected tab
+      if (tabName === 'BrowseListings') {
+        loadBrowseListings();
+      } else if (tabName === 'MyListings') {
+        loadMyListings();
+      }
+    }
+
+    function loadBrowseListings() {
+      fetch('/listings/browse')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('BrowseListings').innerHTML = html;
+        });
+    }
+
+    function loadMyListings() {
+      fetch('/users/my-listings')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('MyListings').innerHTML = html;
+        });
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+  </script>
 </body>
 </html>

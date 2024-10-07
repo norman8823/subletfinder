@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Listing</title>
+</head>
+<body>
+    <h1>Create New Listing</h1>
+    <form action="/listings" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" min="0" step="0.01" required>
+        </div>
+        
+        <div>
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+        </div>
+        
+        <div>
+            <label for="zip">ZIP Code:</label>
+            <input type="text" id="zip" name="zip" required>
+        </div>
+        
+        <div>
+            <label for="borough">Borough:</label>
+            <select id="borough" name="borough" required>
+                <option value="">Select a borough</option>
+                <option value="Manhattan">Manhattan</option>
+                <option value="Brooklyn">Brooklyn</option>
+                <option value="Queens">Queens</option>
+                <option value="Bronx">Bronx</option>
+                <option value="Staten Island">Staten Island</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="neighborhood">Neighborhood:</label>
+            <input type="text" id="neighborhood" name="neighborhood">
+        </div>
+        
+        <div>
+            <label for="bedrooms">Bedrooms:</label>
+            <select id="bedrooms" name="bedrooms" required>
+                <option value="Studio">Studio</option>
+                <option value="1 bed">1 bed</option>
+                <option value="2 bed">2 bed</option>
+                <option value="3 bed">3 bed</option>
+                <option value="4 bed">4 bed</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="shared">Shared:</label>
+            <input type="checkbox" id="shared" name="shared">
+        </div>
+        
+        <div>
+            <label for="furnished">Furnished:</label>
+            <input type="checkbox" id="furnished" name="furnished">
+        </div>
+        
+        <div>
+            <label for="petsAllowed">Pets Allowed:</label>
+            <input type="checkbox" id="petsAllowed" name="petsAllowed">
+        </div>
+        
+        <div>
+            <label for="photos">Photos:</label>
+            <input type="file" id="photos" name="photos" multiple>
+        </div>
+        
+        <button type="submit">Create Listing</button>
+    </form>
+</body>
+</html>

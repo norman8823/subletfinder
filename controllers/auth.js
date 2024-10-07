@@ -34,47 +34,47 @@ router.post('/sign-up', async (req, res) => {
     // Must hash the password before sending to the database
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     req.body.password = hashedPassword;
-  
+  console.log(req.body)
     // All ready to create the new user!
     await User.create(req.body);
   
     res.redirect('/auth/sign-in');
   } catch (error) {
     console.log(error);
-    res.redirect('/');
+
   }
 });
 
 router.post('/sign-in', async (req, res) => {
   try {
-    // First, get the user from the database
+    console.log('Sign-in attempt for username:', req.body.username);
     const userInDatabase = await User.findOne({ username: req.body.username });
+    
     if (!userInDatabase) {
-      return res.send('Login failed. Please try again.');
+      console.log('User not found in database');
+      return res.send('Login failed. User not found.');
     }
   
-    // There is a user! Time to test their password with bcrypt
     const validPassword = bcrypt.compareSync(
       req.body.password,
       userInDatabase.password
     );
+    
     if (!validPassword) {
-      return res.send('Login failed. Please try again.');
+      console.log('Invalid password for user:', req.body.username);
+      return res.send('Login failed. Incorrect password.');
     }
   
-    // There is a user AND they had the correct password. Time to make a session!
-    // Avoid storing the password, even in hashed format, in the session
-    // If there is other data you want to save to `req.session.user`, do so here!
     req.session.user = {
       username: userInDatabase.username,
       _id: userInDatabase._id
     };
-  
-    res.redirect('/');
+    
+    console.log('User logged in successfully:', req.body.username);
+    res.redirect('/'); // Redirect to home page
   } catch (error) {
-    console.log(error);
-    res.redirect('/');
+    console.error('Login error:', error);
+    res.status(500).send('An error occurred during login. Please try again.');
   }
 });
-
 module.exports = router;
