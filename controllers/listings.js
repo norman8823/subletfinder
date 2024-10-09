@@ -3,7 +3,18 @@ const express = require('express');
 const router = express.Router();
 const Listing = require('../models/listings');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const path = require('path');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({ storage: storage});
 
 // Middleware to check if user is logged in
 const isLoggedIn = (req, res, next) => {
@@ -17,10 +28,18 @@ const isLoggedIn = (req, res, next) => {
 // Get all listings
 router.get('/', async (req, res) => {
   try {
-    const listings = await Listing.find().populate('user', 'username');
-    res.render('listings/index', { listings });
+    const listings = await Listing.find().populate('user', 'username').select('title price bedrooms borough photos');
+    
+    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+      // If it's an AJAX request or expects JSON, render without layout
+      res.render('listings/index', { listings, layout: false });
+    } else {
+      // If it's a direct page access, redirect to home with tab parameter
+      res.redirect('/?tab=browseListings');
+    }
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error fetching listings:', error);
+    res.status(500).send('Error fetching listings');
   }
 });
 
@@ -51,12 +70,16 @@ router.post('/', isLoggedIn, upload.array('photos', 5), async (req, res) => {
     const listing = new Listing({
       ...req.body,
       user: req.session.user._id,
-      photos: req.files.map(file => file.path),
+      photos: req.files ? req.files.map(file => '/uploads/' + file.filename) : [],
     });
     await listing.save();
-    res.redirect('/listings');
+    res.redirect('/?tab=myListings');
   } catch (error) {
-    res.status(400).send(error.message);
+    console.error('Error creating listing:', error);
+    res.status(400).render('listings/new', { 
+      user: req.session.user, 
+      error: error.message
+    });
   }
 });
 
@@ -74,30 +97,60 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/edit', isLoggedIn, async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
-    if (listing.user.toString() !== req.session.user._id) {
+    if (!listing) {
+      return res.status(404).send('Listing not found');
+    }
+    if (listing.user.toString() !== req.session.user._id.toString()) {
       return res.status(403).send('Unauthorized');
     }
-    res.render('listings/edit', { listing });
+    res.render('listings/edit', { listing, user: req.session.user });
   } catch (error) {
-    res.status(404).send('Listing not found');
+    console.error('Error fetching listing for edit:', error);
+    res.status(500).send('Error fetching listing');
   }
 });
+
 
 // Update listing
 router.put('/:id', isLoggedIn, upload.array('photos', 5), async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
-    if (listing.user.toString() !== req.session.user._id) {
+    if (!listing) {
+      return res.status(404).send('Listing not found');
+    }
+    if (listing.user.toString() !== req.session.user._id.toString()) {
       return res.status(403).send('Unauthorized');
     }
-    listing.set({
-      ...req.body,
-      photos: req.files.map(file => file.path),
-    });
+    
+    // Update listing fields
+    listing.title = req.body.title;
+    listing.description = req.body.description;
+    listing.price = req.body.price;
+    listing.address = req.body.address;
+    listing.zip = req.body.zip;
+    listing.borough = req.body.borough;
+    listing.neighborhood = req.body.neighborhood;
+    listing.bedrooms = req.body.bedrooms;
+    listing.shared = !!req.body.shared;
+    listing.furnished = !!req.body.furnished;
+    listing.petsAllowed = !!req.body.petsAllowed;
+
+    // Handle photo deletion
+    if (req.body.deletePhotos) {
+      const photosToDelete = Array.isArray(req.body.deletePhotos) ? req.body.deletePhotos : [req.body.deletePhotos];
+      listing.photos = listing.photos.filter(photo => !photosToDelete.includes(photo));   
+    }
+    // Handle new photos
+    if (req.files && req.files.length > 0) {
+      const newPhotos = req.files.map(file => '/uploads/' + file.filename);
+      listing.photos = listing.photos.concat(newPhotos);
+    }
+
     await listing.save();
-    res.redirect(`/listings/${listing._id}`);
+    res.redirect('/?tab=myListings');
   } catch (error) {
-    res.status(400).send(error.message);
+    console.error('Error updating listing:', error);
+    res.status(400).send('Error updating listing');
   }
 });
 
@@ -105,13 +158,17 @@ router.put('/:id', isLoggedIn, upload.array('photos', 5), async (req, res) => {
 router.delete('/:id', isLoggedIn, async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
-    if (listing.user.toString() !== req.session.user._id) {
+    if (!listing) {
+      return res.status(404).send('Listing not found');
+    }
+    if (listing.user.toString() !== req.session.user._id.toString()) {
       return res.status(403).send('Unauthorized');
     }
-    await listing.remove();
-    res.redirect('/listings');
+    await Listing.findByIdAndDelete(req.params.id);
+    res.redirect('/?tab=myListings');
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error('Error deleting listing:', error);
+    res.status(500).send('Error deleting listing');
   }
 });
 

@@ -1,3 +1,4 @@
+//models listings.js
 const mongoose = require('mongoose');
 
 const listingSchema = new mongoose.Schema({
@@ -16,7 +17,7 @@ const listingSchema = new mongoose.Schema({
   shared: { type: Boolean},
   furnished: { type: Boolean, default: false },
   petsAllowed: { type: Boolean},
-  photos: [{ type: String }], // Array of photo URLs
+  photos: [{ type: String }], 
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 

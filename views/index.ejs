@@ -45,12 +45,12 @@
     <% } %>
   </nav>
 
-  <h1>Welcome to the app, <%= user ? user.username : 'guest' %>!</h1>
+  <h1>Welcome, <%= user ? user.username : 'guest' %>!</h1>
 
   <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'BrowseListings')" id="defaultOpen">Browse Listings</button>
     <% if (user) { %>
-      <button class="tablinks" onclick="openTab(event, 'MyListings')">My Listings</button>
+      <button class="tablinks" onclick="openTab(event, 'MyListings')" id="myListingsTab">My Listings</button>
     <% } %>
   </div>
 
@@ -79,15 +79,14 @@
       }
       document.getElementById(tabName).style.display = "block";
       evt.currentTarget.className += " active";
-
-      // Load content for the selected tab
+  
       if (tabName === 'BrowseListings') {
         loadBrowseListings();
       } else if (tabName === 'MyListings') {
         loadMyListings();
       }
     }
-
+  
     function loadBrowseListings() {
       fetch('/listings/browse')
         .then(response => response.text())
@@ -95,7 +94,7 @@
           document.getElementById('BrowseListings').innerHTML = html;
         });
     }
-
+  
     function loadMyListings() {
       fetch('/users/my-listings')
         .then(response => response.text())
@@ -103,8 +102,7 @@
           document.getElementById('MyListings').innerHTML = html;
         });
     }
-
-    // Get the element with id="defaultOpen" and click on it
+  
     document.getElementById("defaultOpen").click();
   </script>
 </body>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= listing.title %></title>
+</head>
+<body>
+    <header>
+        <h1><%= listing.title %></h1>
+        <h2>Price: $<%= listing.price %></h2>
+    </header>
+
+    <% if (listing.photos && listing.photos.length > 0) { %>
+        <div class="listing-images">
+            <% listing.photos.forEach(photo => { %>
+                <img src="<%= photo %>" alt="Photo of <%= listing.title %>">
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p>No images available for this listing.</p>
+    <% } %>
+
+    <section>
+        <h3>Description</h3>
+        <p><%= listing.description %></p>
+        
+        <h3>Details</h3>
+        <ul>
+            <li>Address: <%= listing.address %>, <%= listing.borough %></li>
+            <li>Neighborhood: <%= listing.neighborhood %></li>
+            <li>Bedrooms: <%= listing.bedrooms %></li>
+            <li>Shared: <%= listing.shared ? 'Yes' : 'No' %></li>
+            <li>Furnished: <%= listing.furnished ? 'Yes' : 'No' %></li>
+            <li>Pets Allowed: <%= listing.petsAllowed ? 'Yes' : 'No' %></li>
+        </ul>
+        
+        <h3>Contact</h3>
+        <p>Email: <%= listing.user.email %></p>
+    </section>
+</body>
+</html>

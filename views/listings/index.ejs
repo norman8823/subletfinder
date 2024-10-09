@@ -1,0 +1,25 @@
+
+
+<h2>Browse Listings</h2>
+<% if (listings && listings.length > 0) { %>
+  <ul style="list-style-type: none; padding: 0;">
+    <% listings.forEach(function(listing) { %>
+      <li style="border: 1px solid #ddd; margin-bottom: 20px; padding: 10px;">
+        <div style="text-align: center;">
+          <% if (listing.photos && listing.photos.length > 0) { %>
+            <img src="<%= listing.photos[0] %>" alt="<%= listing.title %>" style="max-width: 100%; height: auto; max-height: 200px;">
+          <% } else { %>
+            <img src="/images/placeholder.jpg" alt="No image available" style="max-width: 100%; height: auto; max-height: 200px;">
+          <% } %>
+        </div>
+        <h3><%= listing.title %></h3>
+        <p>Price: $<%= listing.price %></p>
+        <p>Bedrooms: <%= listing.bedrooms %></p>
+        <p>Borough: <%= listing.borough %></p>
+        <a href="/listings/<%= listing._id %>">View Details</a>
+      </li>
+    <% }); %>
+  </ul>
+<% } else { %>
+  <p>No listings available at the moment.</p>
+<% } %>

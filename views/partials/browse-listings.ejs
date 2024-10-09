@@ -1,4 +1,4 @@
-<h2>Browse Listings</h2>
+<h2>Browse All Listings</h2>
 <% if (listings && listings.length > 0) { %>
   <ul>
     <% listings.forEach(listing => { %>
@@ -7,6 +7,7 @@
         <p>Price: $<%= listing.price %></p>
         <p>Bedrooms: <%= listing.bedrooms %></p>
         <p>Borough: <%= listing.borough %></p>
+        <p>Posted by: <%= listing.user.username %></p>
         <a href="/listings/<%= listing._id %>">View Details</a>
       </li>
     <% }); %>
