@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Listings</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- Conditionally render the navbar -->
+  <% if (!noNavbar) { %>
+    <%- include('../partials/navbar') %>
+  <% } %>
+  <br>
+  <!-- Search Form with filters -->
+  <form action="/listings/search" method="GET" class="filter-form">
+    <div class ="filter-row">
+    <input type="text" name="keyword" class="search-keyword" placeholder="Search Keyword" value="<%= keyword %>" />
+
+    <!-- Price Range -->
+    <input type="number" name="minPrice" class="price-filter" placeholder="Min Price" value="<%= minPrice %>" min="0" />
+    <input type="number" name="maxPrice" class="price-filter" placeholder="Max Price" value="<%= maxPrice %>" min="0" />
+
+    <!-- Bedrooms -->
+    <select name="bedrooms">
+      <option value="">Any Bedrooms</option>
+      <option value="Studio" <%= bedrooms === 'Studio' ? 'selected' : '' %>>Studio</option>
+      <option value="1 bed" <%= bedrooms === '1 bed' ? 'selected' : '' %>>1 bed</option>
+      <option value="2 bed" <%= bedrooms === '2 bed' ? 'selected' : '' %>>2 bed</option>
+      <option value="3 bed" <%= bedrooms === '3 bed' ? 'selected' : '' %>>3 bed</option>
+      <option value="4 bed" <%= bedrooms === '4 bed' ? 'selected' : '' %>>4 bed</option>
+    </select>
+
+    <!-- Borough -->
+    <select name="borough">
+      <option value="">Any Borough</option>
+      <option value="Manhattan" <%= borough === 'Manhattan' ? 'selected' : '' %>>Manhattan</option>
+      <option value="Brooklyn" <%= borough === 'Brooklyn' ? 'selected' : '' %>>Brooklyn</option>
+      <option value="Queens" <%= borough === 'Queens' ? 'selected' : '' %>>Queens</option>
+      <option value="Bronx" <%= borough === 'Bronx' ? 'selected' : '' %>>Bronx</option>
+      <option value="Staten Island" <%= borough === 'Staten Island' ? 'selected' : '' %>>Staten Island</option>
+    </select>
+
+    <button type="submit">Search</button>
+    </div>
+  </form>
+
+  <!-- Browse Listings -->
+  <!-- <h2>Browse Listings</h2> -->
+  <%- include('../partials/browse-listings', { listings: listings, fromSearch: false, source: 'browseListings' }) %>
+  
+</body>
+</html>

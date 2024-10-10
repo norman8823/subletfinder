@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,21 +6,13 @@
   <title>My Listings</title>
 </head>
 <body>
-  <h1>My Listings</h1>
-  
-  <% if (listings && listings.length > 0) { %>
-    <ul>
-      <% listings.forEach(listing => { %>
-        <li>
-          <a href="/listings/<%= listing._id %>"><%= listing.title %></a>
-          - $<%= listing.price %>
-        </li>
-      <% }); %>
-    </ul>
-  <% } else { %>
-    <p>You haven't created any listings yet.</p>
+
+  <% if (!noNavbar) { %>
+    <%- include('../partials/navbar') %>
   <% } %>
-  
-  <a href="/listings/new">Create a New Listing</a>
+
+  <!-- <h2>My Listings</h2> -->
+  <%- include('../partials/browse-listings', { listings: listings, fromSearch: false, source: 'myListings', isMyListings: true }) %>
+
 </body>
 </html>

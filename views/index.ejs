@@ -31,11 +31,13 @@
       border: 1px solid #ccc;
       border-top: none;
     }
+    .tabcontent.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <nav>
-    <a href="/">Home</a>
     <% if (user) { %>
       <a href="/users/profile">My Account</a>
       <a href="/auth/sign-out">Log Out</a>
@@ -69,41 +71,60 @@
   <script>
     function openTab(evt, tabName) {
       var i, tabcontent, tablinks;
+
+      // Hide all tab content
       tabcontent = document.getElementsByClassName("tabcontent");
       for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+        tabcontent[i].style.display = "none"; // Hide all content
       }
+
+      // Remove the 'active' class from all tab buttons
       tablinks = document.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
+
+      // Show the selected tab content
       document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
-  
+
+      // Set the button as active if an event is triggered
+      if (evt) {
+        evt.currentTarget.className += " active";
+      } else {
+        // If no event, set the appropriate button as active (e.g., on page load)
+        document.getElementById(tabName === 'MyListings' ? 'myListingsTab' : 'defaultOpen').className += " active";
+      }
+
+      // Load content based on the tab
       if (tabName === 'BrowseListings') {
         loadBrowseListings();
       } else if (tabName === 'MyListings') {
         loadMyListings();
       }
     }
-  
+
     function loadBrowseListings() {
-      fetch('/listings/browse')
+      fetch('/listings/browse?noNavbar=true')
         .then(response => response.text())
         .then(html => {
           document.getElementById('BrowseListings').innerHTML = html;
         });
     }
-  
+
     function loadMyListings() {
-      fetch('/users/my-listings')
+      fetch('/users/my-listings?noNavbar=true')
         .then(response => response.text())
         .then(html => {
           document.getElementById('MyListings').innerHTML = html;
         });
     }
-  
-    document.getElementById("defaultOpen").click();
+
+    // Automatically open the correct tab based on the query parameter
+    document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get('tab') || 'BrowseListings';  // Default to BrowseListings
+      openTab(null, tab);  // Open tab without event
+    });
   </script>
 </body>
 </html>

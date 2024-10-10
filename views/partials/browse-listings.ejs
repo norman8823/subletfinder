@@ -1,14 +1,54 @@
-<h2>Browse All Listings</h2>
+<% var isMyListings = typeof isMyListings !== 'undefined' ? isMyListings : false; %>
+<% var search = typeof search !== 'undefined' ? search : false; %>
 <% if (listings && listings.length > 0) { %>
-  <ul>
+  <ul class="listing-container">
     <% listings.forEach(listing => { %>
-      <li>
-        <h3><%= listing.title %></h3>
-        <p>Price: $<%= listing.price %></p>
-        <p>Bedrooms: <%= listing.bedrooms %></p>
-        <p>Borough: <%= listing.borough %></p>
-        <p>Posted by: <%= listing.user.username %></p>
-        <a href="/listings/<%= listing._id %>">View Details</a>
+      <li class="listing-item">
+        <div class="listing-row">
+          <!-- Image Section -->
+          <div class="listing-image">
+            <% if (listing.photos && listing.photos.length > 0) { %>
+              <img src="<%= listing.photos[0] %>" alt="<%= listing.title %>">
+            <% } else { %>
+              <img src="/images/placeholder.jpg" alt="No image available">
+            <% } %>
+          </div>
+
+          <!-- Text Section -->
+          <div class="listing-details">
+            <h3><%= listing.title %></h3>
+            <p>Price: $<%= listing.price %></p>
+            <p>Bedrooms: <%= listing.bedrooms %></p>
+            <p>Borough: <%= listing.borough %></p>
+
+            <!-- If source is from search, pass source=searchResults in the link
+            <% if (search) { %>
+              <a href="/listings/<%= listing._id %>?source=searchResults">View Details</a>
+            <% } else { %>
+              <a href="/listings/<%= listing._id %>?source=browseListings">View Details</a>
+            <% } %> -->
+            
+            <!-- Conditionally show Edit/Delete for My Listings -->
+            <% if (isMyListings) { %>
+              <!-- Show Edit and Delete for My Listings -->
+              <a href="/listings/<%= listing._id %>/edit">Edit Listing</a>
+              <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline;">
+                <br>
+                <button type="submit">Delete</button>
+              </form>
+            <% } else { %>
+              <!-- Otherwise, show View Details link -->
+              <% if (fromSearch) { %>
+                <a href="/listings/<%= listing._id %>?fromSearch=true">View Details</a>
+              <% } else if (source === 'myListings') { %>
+                <a href="/listings/<%= listing._id %>?source=myListings">View Details</a>
+              <% } else { %>
+                <a href="/listings/<%= listing._id %>?source=browseListings">View Details</a>
+              <% } %>
+            <% } %>
+
+          </div>
+        </div>
       </li>
     <% }); %>
   </ul>

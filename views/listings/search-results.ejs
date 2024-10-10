@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- Conditionally render the navbar -->
+  <%- include('../partials/navbar') %>
+  <br>
+
+  <!-- Back to Listings Link -->
+  <a href="/listings/browse">Back to Listings</a>
+
+  <!-- Search Results Heading -->
+  <h2>Search Results</h2>
+
+  <!-- Reuse the browse-listings partial for search results -->
+  <%- include('../partials/browse-listings', { listings: listings, fromSearch: true, source: 'searchResults' }) %>
+
+</body>
+</html>

@@ -6,9 +6,18 @@
     <title><%= listing.title %></title>
 </head>
 <body>
+    <% if (req.query.source === 'myListings') { %>
+        <a href="/users/my-listings">Back to My Listings</a>
+    <% } else if (req.query.source === 'browseListings') { %>
+        <a href="/listings/browse">Back to Browse Listings</a>
+    <% } else if (req.query.fromSearch === 'true') { %>
+        <a href="javascript:history.back()">Back to Search Results</a>
+    <% } %>
+
     <header>
         <h1><%= listing.title %></h1>
         <h2>Price: $<%= listing.price %></h2>
+        <h3>Address: <%= listing.address %>, <%= listing.borough %><h3>
     </header>
 
     <% if (listing.photos && listing.photos.length > 0) { %>
@@ -27,7 +36,6 @@
         
         <h3>Details</h3>
         <ul>
-            <li>Address: <%= listing.address %>, <%= listing.borough %></li>
             <li>Neighborhood: <%= listing.neighborhood %></li>
             <li>Bedrooms: <%= listing.bedrooms %></li>
             <li>Shared: <%= listing.shared ? 'Yes' : 'No' %></li>

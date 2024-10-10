@@ -46,18 +46,47 @@ router.get('/', async (req, res) => {
 // Search listings
 router.get('/search', async (req, res) => {
   try {
-    const { query } = req.query;
-    const listings = await Listing.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { description: { $regex: query, $options: 'i' } },
-      ],
-    }).populate('user', 'username');
-    res.render('listings/index', { listings });
+    const { keyword, minPrice, maxPrice, bedrooms, borough } = req.query;
+
+    // Create the query object
+    let query = {};
+
+    // Add $regex for keyword if provided
+    if (keyword && typeof keyword === 'string') {
+      query.$or = [
+        { title: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } }
+      ];
+    }
+
+    // Add price filters if provided
+    if (minPrice) {
+      query.price = { ...query.price, $gte: Number(minPrice) }; // Ensure minPrice is a number
+    }
+    if (maxPrice) {
+      query.price = { ...query.price, $lte: Number(maxPrice) }; // Ensure maxPrice is a number
+    }
+
+    // Add bedrooms filter if provided
+    if (bedrooms && typeof bedrooms === 'string') {
+      query.bedrooms = bedrooms; // Match exact bedrooms value
+    }
+
+    // Add borough filter if provided
+    if (borough && typeof borough === 'string') {
+      query.borough = borough; // Match exact borough value
+    }
+
+    // Execute the query and populate user data
+    const listings = await Listing.find(query).populate('user', 'username');
+    
+    // Render the search results using the same template but with a "Search Results" heading
+    res.render('listings/search-results', { listings, keyword, search: true });
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
+
 
 // Create new listing form
 router.get('/new', isLoggedIn, (req, res) => {
@@ -71,9 +100,13 @@ router.post('/', isLoggedIn, upload.array('photos', 5), async (req, res) => {
       ...req.body,
       user: req.session.user._id,
       photos: req.files ? req.files.map(file => '/uploads/' + file.filename) : [],
+      furnished: !!req.body.furnished,
+      shared: !!req.body.shared,
+      petsAllowed: !!req.body.petsAllowed
     });
+
     await listing.save();
-    res.redirect('/?tab=myListings');
+    res.redirect('/users/my-listings');
   } catch (error) {
     console.error('Error creating listing:', error);
     res.status(400).render('listings/new', { 
@@ -87,7 +120,7 @@ router.post('/', isLoggedIn, upload.array('photos', 5), async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id).populate('user', 'username');
-    res.render('listings/show', { listing });
+    res.render('listings/show', { listing, req });
   } catch (error) {
     res.status(404).send('Listing not found');
   }
@@ -147,7 +180,7 @@ router.put('/:id', isLoggedIn, upload.array('photos', 5), async (req, res) => {
     }
 
     await listing.save();
-    res.redirect('/?tab=myListings');
+    res.redirect('/users/my-listings');
   } catch (error) {
     console.error('Error updating listing:', error);
     res.status(400).send('Error updating listing');
@@ -165,7 +198,7 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
       return res.status(403).send('Unauthorized');
     }
     await Listing.findByIdAndDelete(req.params.id);
-    res.redirect('/?tab=myListings');
+    res.redirect('/users/my-listings');
   } catch (error) {
     console.error('Error deleting listing:', error);
     res.status(500).send('Error deleting listing');

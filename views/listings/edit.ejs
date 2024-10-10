@@ -12,27 +12,27 @@
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" value="<%= listing.title %>" required>
         </div>
-        
+        <br>
         <div>
             <label for="description">Description:</label>
             <textarea id="description" name="description" required><%= listing.description %></textarea>
         </div>
-        
+        <br>
         <div>
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" value="<%= listing.price %>" min="0" step="0.01" required>
         </div>
-        
+        <br>
         <div>
             <label for="address">Address:</label>
             <input type="text" id="address" name="address" value="<%= listing.address %>" required>
         </div>
-        
+        <br>
         <div>
             <label for="zip">ZIP Code:</label>
             <input type="text" id="zip" name="zip" value="<%= listing.zip %>" required>
         </div>
-        
+        <br>
         <div>
             <label for="borough">Borough:</label>
             <select id="borough" name="borough" required>
@@ -43,12 +43,12 @@
                 <option value="Staten Island" <%= listing.borough === 'Staten Island' ? 'selected' : '' %>>Staten Island</option>
             </select>
         </div>
-        
+        <br>
         <div>
             <label for="neighborhood">Neighborhood:</label>
             <input type="text" id="neighborhood" name="neighborhood" value="<%= listing.neighborhood %>">
         </div>
-        
+        <br>
         <div>
             <label for="bedrooms">Bedrooms:</label>
             <select id="bedrooms" name="bedrooms" required>
@@ -90,15 +90,15 @@
                 <p>No photos available for this listing.</p>
             <% } %>
         </div>
-
+        <br>
         <div>
             <label for="photos">Add Photos:</label>
             <input type="file" id="photos" name="photos" multiple>
         </div>
-        
+        <br>
         <button type="submit">Update Listing</button>
     </form>
-    
+    <br>
     <a href="/">Back to Home</a>
 </body>
 </html>

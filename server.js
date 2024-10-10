@@ -20,12 +20,10 @@ app.use(expressLayouts);
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
-// Move these middleware declarations here
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 
 const isLoggedIn = (req, res, next) => {
@@ -50,33 +48,84 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
 app.get("/", (req, res) => {
   res.render("index.ejs", {
-    user: req.session.user,
+    fromListing: false
   });
 });
 
 app.get('/listings/browse', async (req, res) => {
   try {
-    const listings = await Listing.find().populate('user', 'username');
-    res.render('partials/browse-listings', { listings, layout: false });
+    const { keyword, minPrice, maxPrice, bedrooms, borough } = req.query;
+
+    // Build the query object based on filters
+    const query = {};
+
+    // Keyword search for title and description
+    if (keyword) {
+      query.$or = [
+        { title: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } }
+      ];
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = parseFloat(minPrice);
+      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+    }
+
+    // Bedrooms filter
+    if (bedrooms) {
+      query.bedrooms = bedrooms;
+    }
+
+    // Borough filter
+    if (borough) {
+      query.borough = borough;
+    }
+
+    // Fetch filtered listings from the database
+    const listings = await Listing.find(query).populate('user', 'username');
+
+    // Render the browse page with the filters applied
+    res.render('listings/browse', {
+      listings,
+      keyword,
+      minPrice,
+      maxPrice,
+      bedrooms,
+      borough,
+      noNavbar: req.query.noNavbar === 'true'
+    });
   } catch (error) {
     res.status(500).send('Error fetching listings');
   }
 });
+
+
 
 app.get('/users/my-listings', isLoggedIn, async (req, res) => {
   try {
     const listings = await Listing.find({ user: req.session.user._id });
-    res.render('partials/my-listings', { listings, layout: false });
+    const noNavbar = req.query.noNavbar === 'true';
+    res.render('users/my-listings', { listings, noNavbar });
   } catch (error) {
     res.status(500).send('Error fetching listings');
   }
 });
+;
 
 app.use("/auth", authController);
 app.use("/listings", listingsController);
 app.use("/users", usersController);
+
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

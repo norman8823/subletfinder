@@ -1,0 +1,85 @@
+/* CSS file: public/styles.css */
+
+.listing-container {
+    list-style-type: none;
+    padding: 0;
+}
+
+.listing-item {
+    margin-bottom: 20px;
+}
+
+.listing-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.listing-image img {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+}
+
+.listing-details h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: sans-serif;
+}
+
+.listing-details p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #555;
+    font-family: sans-serif;
+}
+
+.listing-details a {
+    text-decoration: none;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.listing-details a:hover {
+    text-decoration: underline;
+}
+
+/* Style the form container */
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    margin-bottom: 20px;
+  }
+  
+  /* Style the search keyword input */
+  .search-keyword {
+    width: 300px; 
+    padding: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Style the price filter inputs */
+  .price-filter {
+    width: 100px; 
+    padding: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Ensure the select dropdowns match the height of other inputs */
+.filter-form select {
+    padding: 5px; /* Same padding as other input fields */
+    font-size: 1rem; /* Same font size as other input fields */
+    height: auto; /* Ensure height is automatically calculated based on padding */
+    box-sizing: border-box; /* Ensure padding is included in the height calculation */
+}
+
+  /* Optional: Style the submit button */
+  .filter-form button {
+    padding: 5px 10px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
