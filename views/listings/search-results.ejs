@@ -9,11 +9,11 @@
 <body>
 
   <!-- Conditionally render the navbar -->
-  <%- include('../partials/navbar') %>
+  <%- include('../partials/navbar', { req: req }) %>
   <br>
 
   <!-- Back to Listings Link -->
-  <a href="/listings/browse">Back to Listings</a>
+  <a href="/">Back to Listings</a>
 
   <!-- Search Results Heading -->
   <h2>Search Results</h2>

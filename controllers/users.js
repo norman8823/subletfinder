@@ -19,7 +19,7 @@ router.get('/profile', isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.session.user._id).select('-password');
     const listings = await Listing.find({ user: req.session.user._id });
-    res.render('users/profile', { user, listings });
+    res.render('users/profile', { user, listings, req });
   } catch (error) {
     res.status(500).send(error.message);
   }

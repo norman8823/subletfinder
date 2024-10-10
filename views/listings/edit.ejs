@@ -4,36 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Listing</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>Edit Listing</h1>
-    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
-        <div>
+    
+    <div class="form-container"> 
+    <form class="new-listing-form" action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+        <a href="/">Back to Home</a>
+        <h2>Edit Listing</h2>
+        <!-- Title -->
+        <div class="form-group">
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" value="<%= listing.title %>" required>
         </div>
-        <br>
-        <div>
+        
+        <!-- Description -->
+        <div class="form-group">
             <label for="description">Description:</label>
             <textarea id="description" name="description" required><%= listing.description %></textarea>
         </div>
-        <br>
-        <div>
+
+        <!-- Price -->
+        <div class="form-group">
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" value="<%= listing.price %>" min="0" step="0.01" required>
         </div>
-        <br>
-        <div>
+
+        <!-- Address -->
+        <div class="form-group">
             <label for="address">Address:</label>
             <input type="text" id="address" name="address" value="<%= listing.address %>" required>
         </div>
-        <br>
-        <div>
+
+        <!-- ZIP Code -->
+        <div class="form-group">
             <label for="zip">ZIP Code:</label>
             <input type="text" id="zip" name="zip" value="<%= listing.zip %>" required>
         </div>
-        <br>
-        <div>
+
+        <!-- Borough -->
+        <div class="form-group">
             <label for="borough">Borough:</label>
             <select id="borough" name="borough" required>
                 <option value="Manhattan" <%= listing.borough === 'Manhattan' ? 'selected' : '' %>>Manhattan</option>
@@ -43,13 +53,15 @@
                 <option value="Staten Island" <%= listing.borough === 'Staten Island' ? 'selected' : '' %>>Staten Island</option>
             </select>
         </div>
-        <br>
-        <div>
+
+        <!-- Neighborhood -->
+        <div class="form-group">
             <label for="neighborhood">Neighborhood:</label>
             <input type="text" id="neighborhood" name="neighborhood" value="<%= listing.neighborhood %>">
         </div>
-        <br>
-        <div>
+
+        <!-- Bedrooms -->
+        <div class="form-group">
             <label for="bedrooms">Bedrooms:</label>
             <select id="bedrooms" name="bedrooms" required>
                 <option value="Studio" <%= listing.bedrooms === 'Studio' ? 'selected' : '' %>>Studio</option>
@@ -59,24 +71,27 @@
                 <option value="4 bed" <%= listing.bedrooms === '4 bed' ? 'selected' : '' %>>4 bed</option>
             </select>
         </div>
-        
-        <div>
+
+        <!-- Shared -->
+        <div class="form-group-inline">
             <label for="shared">Shared:</label>
             <input type="checkbox" id="shared" name="shared" <%= listing.shared ? 'checked' : '' %>>
         </div>
-        
-        <div>
+
+        <!-- Furnished -->
+        <div class="form-group-inline">
             <label for="furnished">Furnished:</label>
             <input type="checkbox" id="furnished" name="furnished" <%= listing.furnished ? 'checked' : '' %>>
         </div>
-        
-        <div>
+
+        <!-- Pets Allowed -->
+        <div class="form-group-inline">
             <label for="petsAllowed">Pets Allowed:</label>
             <input type="checkbox" id="petsAllowed" name="petsAllowed" <%= listing.petsAllowed ? 'checked' : '' %>>
         </div>
-        
-        <div>
-            <h3>Current Photos</h3>
+
+        <!-- Current Photos -->
+        <div class="form-group-inline">
             <% if (listing.photos && listing.photos.length > 0) { %>
                 <% listing.photos.forEach(function(photo, index) { %>
                     <div style="margin-bottom: 10px;">
@@ -90,15 +105,17 @@
                 <p>No photos available for this listing.</p>
             <% } %>
         </div>
-        <br>
-        <div>
+
+        <!-- Add Photos -->
+        <div class="form-group">
             <label for="photos">Add Photos:</label>
             <input type="file" id="photos" name="photos" multiple>
         </div>
-        <br>
+
+        <!-- Submit Button -->
         <button type="submit">Update Listing</button>
     </form>
     <br>
-    <a href="/">Back to Home</a>
+
 </body>
 </html>

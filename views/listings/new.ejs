@@ -6,29 +6,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Listing</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
   
 <body>
-    <%- include('../partials/navbar') %>
-    <h1>Create New Listing</h1>
-    <form action="/listings" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="title">Title:</label>
+
+    <h2>Create New Listing</h2>
+    <form action="/listings" method="POST" enctype="multipart/form-data" class="new-listing-form">
+        <div class="form-group">
+            <label for="title">Title</label>
             <input type="text" id="title" name="title" required>
         </div>
-        <br>
-        <div>
-            <label for="description">Description:</label>
+    
+        <div class="form-group">
+            <label for="description">Description</label>
             <textarea id="description" name="description" required></textarea>
         </div>
-        <br>
-        <div>
-            <label for="price">Price:</label>
+    
+        <div class="form-group">
+            <label for="price">Price</label>
             <input type="number" id="price" name="price" min="0" step="0.01" required>
         </div>
-        <br>
-        <div>
-            <label for="bedrooms">Bedrooms:</label>
+    
+        <div class="form-group">
+            <label for="bedrooms">Bedrooms</label>
             <select id="bedrooms" name="bedrooms" required>
                 <option value="Studio">Studio</option>
                 <option value="1 bed">1 bed</option>
@@ -37,19 +38,24 @@
                 <option value="4 bed">4 bed</option>
             </select>
         </div>
-        <br>
-        <div>
-            <label for="address">Address:</label>
+    
+        <div class="form-group">
+            <label for="address">Address</label>
             <input type="text" id="address" name="address" required>
         </div>
-        <br>
-        <div>
-            <label for="zip">ZIP Code:</label>
+    
+        <div class="form-group">
+            <label for="zip">ZIP Code</label>
             <input type="text" id="zip" name="zip" required>
         </div>
-        <br>
-        <div>
-            <label for="borough">Borough:</label>
+
+        <div class="form-group">
+            <label for="neighborhood">Neighborhood</label>
+            <input type="text" id="neighborhood" name="neighborhood" required>
+        </div>
+    
+        <div class="form-group">
+            <label for="borough">Borough</label>
             <select id="borough" name="borough" required>
                 <option value="">Select a borough</option>
                 <option value="Manhattan">Manhattan</option>
@@ -59,33 +65,19 @@
                 <option value="Staten Island">Staten Island</option>
             </select>
         </div>
-        <br>
-        <div>
-            <label for="neighborhood">Neighborhood:</label>
-            <input type="text" id="neighborhood" name="neighborhood">
+    
+        <div class="form-group-inline">
+            <label><input type="checkbox" id="shared" name="shared"> Shared</label>
+            <label><input type="checkbox" id="furnished" name="furnished"> Furnished</label>
+            <label><input type="checkbox" id="petsAllowed" name="petsAllowed"> Pets Allowed</label>
         </div>
-        <br>
-        <div>
-            <label for="shared">Shared:</label>
-            <input type="checkbox" id="shared" name="shared">
-        </div>
-        
-        <div>
-            <label for="furnished">Furnished:</label>
-            <input type="checkbox" id="furnished" name="furnished">
-        </div>
-        
-        <div>
-            <label for="petsAllowed">Pets Allowed:</label>
-            <input type="checkbox" id="petsAllowed" name="petsAllowed">
-        </div>
-        <br>
-        <div>
-            <label for="photos">Photos:</label>
+    
+        <div class="form-group">
+            <label for="photos">Photos</label>
             <input type="file" id="photos" name="photos" multiple>
         </div>
-        <br>
+    
         <button type="submit">Create Listing</button>
-    </form>
+    </form>    
 </body>
 </html>

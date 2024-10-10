@@ -4,47 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= listing.title %></title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <% if (req.query.source === 'myListings') { %>
-        <a href="/users/my-listings">Back to My Listings</a>
-    <% } else if (req.query.source === 'browseListings') { %>
-        <a href="/listings/browse">Back to Browse Listings</a>
-    <% } else if (req.query.fromSearch === 'true') { %>
-        <a href="javascript:history.back()">Back to Search Results</a>
-    <% } %>
+    <div class="listing-detail-container">
+        <% if (req.query.source === 'myListings') { %>
+            <a href="/users/my-listings" class="back-link">Back to My Listings</a>
+        <% } else if (req.query.source === 'browseListings') { %>
+            <a href="/" class="back-link">Back to Listings</a>
+        <% } else if (req.query.fromSearch === 'true') { %>
+            <a href="javascript:history.back()" class="back-link">Back to Search Results</a>
+        <% } %>
 
-    <header>
-        <h1><%= listing.title %></h1>
-        <h2>Price: $<%= listing.price %></h2>
-        <h3>Address: <%= listing.address %>, <%= listing.borough %><h3>
-    </header>
+        <header>
+            <h1><%= listing.title %></h1>
+            <h2>Price: $<%= listing.price %></h2>
+            <h3>Address: <%= listing.address %>, <%= listing.borough %></h3>
+        </header>
+        <hr>
+        <% if (listing.photos && listing.photos.length > 0) { %>
+            <div class="listing-images">
+                <% listing.photos.forEach(photo => { %>
+                    <img src="<%= photo %>" alt="Photo of <%= listing.title %>">
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p>No images available for this listing.</p>
+        <% } %>
 
-    <% if (listing.photos && listing.photos.length > 0) { %>
-        <div class="listing-images">
-            <% listing.photos.forEach(photo => { %>
-                <img src="<%= photo %>" alt="Photo of <%= listing.title %>">
-            <% }) %>
-        </div>
-    <% } else { %>
-        <p>No images available for this listing.</p>
-    <% } %>
+        <section>
+            <hr>
+            <h3>Description</h3>
+            <p><%= listing.description %></p>
 
-    <section>
-        <h3>Description</h3>
-        <p><%= listing.description %></p>
-        
-        <h3>Details</h3>
-        <ul>
-            <li>Neighborhood: <%= listing.neighborhood %></li>
-            <li>Bedrooms: <%= listing.bedrooms %></li>
-            <li>Shared: <%= listing.shared ? 'Yes' : 'No' %></li>
-            <li>Furnished: <%= listing.furnished ? 'Yes' : 'No' %></li>
-            <li>Pets Allowed: <%= listing.petsAllowed ? 'Yes' : 'No' %></li>
-        </ul>
-        
-        <h3>Contact</h3>
-        <p>Email: <%= listing.user.email %></p>
-    </section>
+            <h3>Details</h3>
+            <ul>
+                <li>Neighborhood: <%= listing.neighborhood %></li>
+                <li>Bedrooms: <%= listing.bedrooms %></li>
+                <li>Shared: <%= listing.shared ? 'Yes' : 'No' %></li>
+                <li>Furnished: <%= listing.furnished ? 'Yes' : 'No' %></li>
+                <li>Pets Allowed: <%= listing.petsAllowed ? 'Yes' : 'No' %></li>
+            </ul>
+
+            <h3>Contact</h3>
+            <p>Email: <%= listing.user.email %></p>
+        </section>
+    </div>
 </body>
 </html>

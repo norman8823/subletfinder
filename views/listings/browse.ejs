@@ -6,12 +6,14 @@
   <title>Browse Listings</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
 
+<body>
+  <div class="home-container"> 
   <!-- Conditionally render the navbar -->
   <% if (!noNavbar) { %>
-    <%- include('../partials/navbar') %>
-  <% } %>
+    <%- include('../partials/navbar', { req: req }) %>
+    <% } %>
+  <h2>Browse All Listings</h2>
   <br>
   <!-- Search Form with filters -->
   <form action="/listings/search" method="GET" class="filter-form">
@@ -47,7 +49,7 @@
   </form>
 
   <!-- Browse Listings -->
-  <!-- <h2>Browse Listings</h2> -->
+
   <%- include('../partials/browse-listings', { listings: listings, fromSearch: false, source: 'browseListings' }) %>
   
 </body>

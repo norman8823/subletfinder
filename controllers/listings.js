@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
     
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
       // If it's an AJAX request or expects JSON, render without layout
-      res.render('listings/index', { listings, layout: false });
+      res.render('listings/index', { listings, req, layout: false });
     } else {
       // If it's a direct page access, redirect to home with tab parameter
       res.redirect('/?tab=browseListings');
@@ -81,7 +81,7 @@ router.get('/search', async (req, res) => {
     const listings = await Listing.find(query).populate('user', 'username');
     
     // Render the search results using the same template but with a "Search Results" heading
-    res.render('listings/search-results', { listings, keyword, search: true });
+    res.render('listings/search-results', { listings, req, keyword, search: true });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -90,7 +90,7 @@ router.get('/search', async (req, res) => {
 
 // Create new listing form
 router.get('/new', isLoggedIn, (req, res) => {
-    res.render('listings/new', { user: req.session.user });
+    res.render('listings/new', { user: req.session.user,req });
   });
   
 // Create new listing
@@ -116,13 +116,20 @@ router.post('/', isLoggedIn, upload.array('photos', 5), async (req, res) => {
   }
 });
 
-// Get single listing
+// Show listing details
 router.get('/:id', async (req, res) => {
   try {
-    const listing = await Listing.findById(req.params.id).populate('user', 'username');
-    res.render('listings/show', { listing, req });
+      // Populate the user field with username and email
+      const listing = await Listing.findById(req.params.id).populate('user', 'username email');
+      
+      if (!listing) {
+          return res.status(404).send('Listing not found');
+      }
+
+      // Render the show.ejs file, passing the listing data
+      res.render('listings/show', { listing, req });
   } catch (error) {
-    res.status(404).send('Listing not found');
+      res.status(500).send('Error fetching listing');
   }
 });
 

@@ -1,9 +1,17 @@
 <nav>
-    <a href="/">Home</a>
-    <% if (user) { %>
-      <a href="/users/profile">My Account</a>
-      <a href="/auth/sign-out">Log Out</a>
+    <% if (user) { %> 
+      <!-- If user is on the "My Account" page, show only Home and Log Out -->
+      <% if (req.path === '/users/profile') { %>
+        <a href="/">Home</a>
+        <a href="/auth/sign-out">Log Out</a>
+      <% } else { %>
+        <!-- If user is on any other page, show My Account, Home, and Log Out -->
+        <a href="/">Home</a>
+        <a href="/users/profile">My Account</a>
+        <a href="/auth/sign-out">Log Out</a>
+      <% } %>
     <% } else { %>
+      <!-- If user is not signed in, show Sign In and Sign Up -->
       <a href="/auth/sign-in">Sign In</a>
       <a href="/auth/sign-up">Sign Up</a>
     <% } %>

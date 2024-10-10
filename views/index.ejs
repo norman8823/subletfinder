@@ -4,39 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Page</title>
-  <style>
-    .tab {
-      overflow: hidden;
-      border: 1px solid #ccc;
-      background-color: #f1f1f1;
-    }
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-    }
-    .tab button:hover {
-      background-color: #ddd;
-    }
-    .tab button.active {
-      background-color: #ccc;
-    }
-    .tabcontent {
-      display: none;
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      border-top: none;
-    }
-    .tabcontent.active {
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+
+  <div class="home-container">
+  <!-- Top Banner with Image -->
+  <div class="top-banner">
+    <img src="/images/banner2.PNG" alt="Banner Image" class="banner-image">
+  </div>
+  
   <nav>
     <% if (user) { %>
       <a href="/users/profile">My Account</a>
@@ -53,6 +30,7 @@
     <button class="tablinks" onclick="openTab(event, 'BrowseListings')" id="defaultOpen">Browse Listings</button>
     <% if (user) { %>
       <button class="tablinks" onclick="openTab(event, 'MyListings')" id="myListingsTab">My Listings</button>
+      <button class="tablinks" onclick="openTab(event, 'CreateListing')" id="createListingTab">Create Listing</button>
     <% } %>
   </div>
 
@@ -65,6 +43,11 @@
     <div id="MyListings" class="tabcontent">
       <h3>My Listings</h3>
       <!-- Content for My Listings will be loaded here -->
+    </div>
+
+    <div id="CreateListing" class="tabcontent">
+      <h3>Create New Listing</h3>
+      <!-- Content for Create Listing will be loaded here -->
     </div>
   <% } %>
 
@@ -92,7 +75,7 @@
         evt.currentTarget.className += " active";
       } else {
         // If no event, set the appropriate button as active (e.g., on page load)
-        document.getElementById(tabName === 'MyListings' ? 'myListingsTab' : 'defaultOpen').className += " active";
+        document.getElementById(tabName === 'MyListings' ? 'myListingsTab' : tabName === 'CreateListing' ? 'createListingTab' : 'defaultOpen').className += " active";
       }
 
       // Load content based on the tab
@@ -100,6 +83,8 @@
         loadBrowseListings();
       } else if (tabName === 'MyListings') {
         loadMyListings();
+      } else if (tabName === 'CreateListing') {
+        loadCreateListing();
       }
     }
 
@@ -116,6 +101,14 @@
         .then(response => response.text())
         .then(html => {
           document.getElementById('MyListings').innerHTML = html;
+        });
+    }
+
+    function loadCreateListing() {
+      fetch('/listings/new?noNavbar=true')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('CreateListing').innerHTML = html;
         });
     }
 
